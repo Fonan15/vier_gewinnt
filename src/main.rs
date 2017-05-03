@@ -5,11 +5,11 @@ fn main() {
     println!("Minimal version of 4-wins");
     let mut ground = [[0; 7]; 7];
     let mut player = 1;
-    game(&mut ground, player);
+    game(&mut ground, mut player);
 }
 
 
-fn game(ground: &mut[[i32;7];7], player: i32){
+fn game(mut ground: &mut[[i32;7];7], mut player: i32){
 let mut win = false;
 while win == false {
     //Game board
