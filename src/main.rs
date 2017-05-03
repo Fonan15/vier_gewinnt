@@ -9,23 +9,23 @@ fn main() {
 }
 
 
-fn game(ground: &mut [[i32;7];7], player: i32){
-//whjile win{
-    loop{
-        //Game board
-            p_ground(ground);
-	    println!("Player {}, please make your move:", player);
-        //Input
-	    change(&mut ground, player);
-	    player = if player == 1 {2} else {1};
-	    let win = win(&ground, player);
-        }
-   }
+fn game(ground: &mut[[i32;7];7], player: i32){
+let mut win = false;
+while win == false {
+    //Game board
+        p_ground(&mut ground);
+        println!("Player {}, please make your move:", player);
+    //Input
+        change(&mut ground, player);
+	player = if player == 1 {2} else {1};
+    //Check for win
+        
+    }
 }
 
 
 //Iterate and print the whole array row by row
-fn p_ground(ground: [[i32; 7]; 7]){
+fn p_ground(ground: &mut[[i32; 7]; 7]){
 
     for x in 0..7 {
         println!("{:?}", ground[x]);
