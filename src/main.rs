@@ -1,13 +1,13 @@
 use std::io;
 
 fn main() {
-    //Initialization
+//Initialization
     println!("Minimal version of 4-wins");
 	println!("==========================");
 	println!();
     let mut ground = [[0; 7]; 7];
     let player = 1;
-	//Actual game
+//Actual game
     game(&mut ground, player);
 }
 
@@ -19,29 +19,30 @@ fn p_ground(ground: &mut[[i32; 7]; 7]){
     }
 }
 
+//The game itself after initialization
 fn game(mut ground: &mut[[i32;7];7], mut player: i32){
 let mut win = false;
 while win == false {
-    //Game board
+//Game board
         p_ground(&mut ground);
         println!("Player {}, please make your move:", player);
-    //Input
+//Input
         let (row, lane) = change(&mut ground, player);
-		println!("row: {}, lane: {}", row, lane);//Debug print
-    //Check for win
-		win = winning(&mut ground, player, row, lane);
-	//New player set
+//		println!("row: {}, lane: {}", row, lane);//Debug print
+//Check for win
+		win = winning(&mut ground, player);
+//New player set
 		player = if player == 1 {2} else {1};
     }
 }
 
-//Input for the lane which is parsed and returned (only existing lanes accepted)
+//Input for the lane which is parsed, checked and returned (only existing lanes accepted)
 fn change(ground: &mut[[i32; 7]; 7], player: i32)-> (usize, usize){
 //ground[1][1] = 2;//debug-set
 //return;
 loop{
 println!("Please provide a lane:");
-//Eingabemechanik
+//Input itself
     let mut lane = String::new(); //mutable guess and :: associates new of type string
     io::stdin().read_line(&mut lane)
         .expect("Failed to read line.");
@@ -49,7 +50,7 @@ println!("Please provide a lane:");
 	Ok(num) => num,
 	Err(_) => continue, //If error occures go to the beginning of input
     };
-//Kontrollmechanik
+//Validity check
     let lane = if lane <= 7 {lane-1} else {println!("You must provide an existing lane!");
     					continue;}; //If lane is out of bounds go to beginning of input
     let mut row: usize;
@@ -65,10 +66,57 @@ println!("Please provide a lane:");
 }
 }
 
-fn winning(mut ground : &mut[[i32;7];7], player: i32, row: usize, lane: usize)-> bool{
-		if (ground[row][lane] == player){ 
-			p_ground(&mut ground);
-			println!("Player {}, you win!", player);
-			return true;}
-			else {return false};//debug-if
+//Check if any of the given conditions leads to a win
+fn winning(mut ground : &mut[[i32;7];7], player: i32)-> bool{
+//		if (ground[row][lane] == player){ 
+//			p_ground(&mut ground);
+//			println!("Player {}, you win!", player);
+//			return true;}
+//			else {return false};//debug-win-check
+for x in 0..7{
+	for y in 0..4{
+//checks horizontal win
+        if(ground[x][y] != 0 &&
+		ground[x][y]==ground[x][y+1] &&
+		ground[x][y]==ground[x][y+2] && 
+		ground[x][y]==ground[x][y+3]){
+		println!("Player {}, you win!", player);
+        return true;}
+		}
+    }
+for x in 0..4{
+    for y in 0..7{
+//checks vertical win
+        if(ground[x][y] != 0 &&
+		ground[x][y]==ground[x+1][y] &&
+		ground[x][y]==ground[x+2][y] &&
+		ground[x][y]==ground[x+3][y]){
+		println!("Player {}, you win!", player);
+		return true;}
+        }
+    }
+for x in 0..4{
+    for y in 0..4{
+//checks right diagonal
+        if(ground[x][y] != 0 &&
+		ground[x][y]==ground[x+1][y+1] &&
+		ground[x][y]==ground[x+2][y+2] &&
+		ground[x][y]==ground[x+3][y+3]){
+		println!("Player {}, you win!", player);
+		return true;}
+        }
+    }
+for x in 0..4{
+    for y in 0..4{
+//checks left diagonal
+        if(ground[x][y] != 0 &&
+		ground[x][y]==ground[x+1][y-1] &&
+		ground[x][y]==ground[x+2][y-2] &&
+		ground[x][y]==ground[x+3][y-3]){
+		println!("Player {}, you win!", player);
+		return true;}
+        }
+    }
+
+return false;
 }
