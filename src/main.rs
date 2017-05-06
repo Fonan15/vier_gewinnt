@@ -3,11 +3,21 @@ use std::io;
 fn main() {
     //Initialization
     println!("Minimal version of 4-wins");
+	println!("==========================");
+	println!();
     let mut ground = [[0; 7]; 7];
-    let mut player = 1;
-    game(&mut ground, mut player);
+    let player = 1;
+	//Actual game
+    game(&mut ground, player);
 }
 
+
+//Iterate and print the whole array row by row
+fn p_ground(ground: &mut[[i32; 7]; 7]){
+    for x in 0..7 {
+        println!("{:?}", ground[x]);
+    }
+}
 
 fn game(mut ground: &mut[[i32;7];7], mut player: i32){
 let mut win = false;
@@ -16,25 +26,18 @@ while win == false {
         p_ground(&mut ground);
         println!("Player {}, please make your move:", player);
     //Input
-        change(&mut ground, player);
-	player = if player == 1 {2} else {1};
+        let (row, lane) = change(&mut ground, player);
+		println!("row: {}, lane: {}", row, lane);//Debug print
     //Check for win
-        
-    }
-}
-
-
-//Iterate and print the whole array row by row
-fn p_ground(ground: &mut[[i32; 7]; 7]){
-
-    for x in 0..7 {
-        println!("{:?}", ground[x]);
+		win = winning(&mut ground, player, row, lane);
+	//New player set
+		player = if player == 1 {2} else {1};
     }
 }
 
 //Input for the lane which is parsed and returned (only existing lanes accepted)
-fn change(ground: &mut[[i32; 7]; 7], player: i32){
-//ground[1][1] = 2;
+fn change(ground: &mut[[i32; 7]; 7], player: i32)-> (usize, usize){
+//ground[1][1] = 2;//debug-set
 //return;
 loop{
 println!("Please provide a lane:");
@@ -56,9 +59,16 @@ println!("Please provide a lane:");
     }
     if ground[row][lane] == 0 {
     ground[row][lane] = player; //If lane is legit set player to board
-    return;} else {
+    return (row, lane);} else {
     println!("Lane is full."); //If lane is full return to beginning of input
     continue;};
 }
 }
 
+fn winning(mut ground : &mut[[i32;7];7], player: i32, row: usize, lane: usize)-> bool{
+		if (ground[row][lane] == player){ 
+			p_ground(&mut ground);
+			println!("Player {}, you win!", player);
+			return true;}
+			else {return false};//debug-if
+}
