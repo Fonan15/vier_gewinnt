@@ -3,39 +3,72 @@ use std::io;
 //use std::io::Write;
 
 fn main() {
-//Initialization
+//	Initialization
     println!("Minimal version of 4-wins");
 	println!("==========================");
 	println!();
+	let mut round = 1;
+	let mut player = 2;
+loop{
+//	Variable resetting and stuff
+	let mut again = String::new();
     let mut ground = [[0; 7]; 7];
-    let player = 1;
-//Actual game
-    game(&mut ground, player);
+	if round > 1{
+		println!("Since Player{} won last round,", player);
+		}
+	if player == 1 {
+		player = 2;
+		}
+	else{
+		player = 1;
+		}
+	if round > 1{
+		println!("Player{} can start now.", player);
+		}
+//	Actual game
+    player = game(&mut ground, player);
+//	Check for next round
+	loop{
+		println!("Do you want to play another round?");
+	    io::stdin().read_line(&mut again)
+					.expect("Failed to read line.");
+	    again  = match again.trim().parse(){
+		Ok(string) => string,
+		Err(_) => continue, //If error occures go to the beginning of input
+	    };
+//		Handling of input
+		if again == "no"{
+//		Statistics output
+		break;}
+		else if again == "yes"{
+		round = round + 1;
+		break;}
+		else{
+		println!("Please type \"yes\" or \"no\" for valid input");}
+		}
+	if again == "no" {break;} else {continue;}
+}
 }
 
-//Iterate and print the whole array row by row
-fn p_ground(ground: &[[i32; 7]; 7]){
-    for x in 0..7 {
-        println!("{:?}", ground[x]);
-    }
-}
 
 //The game itself after initialization
-fn game(mut ground: &mut[[i32;7];7], mut player: i32){
-let mut win = false;
-while win == false {
-//Game board
+fn game(mut ground: &mut[[i32;7];7], mut player: i32)-> i32{
+	let mut win = false;
+	while win == false {
+//		Game board
         p_ground(&ground);
         println!("Player {}, please make your move:", player);
-//Input
+//		Input
         let (row, lane) = change(&mut ground, player);
 //		println!("row: {}, lane: {}", row, lane);//Debug print
-//Check for win
+//		Check for win
 		win = winning(&ground, player);
-//New player set
+//		New player set
 		player = if player == 1 {2} else {1};
 //		stdout().flush();
     }
+	player = if player == 1 {2} else {1};
+	return player;
 }
 
 //Input for the lane which is parsed, checked and returned (only existing lanes accepted)
@@ -45,17 +78,17 @@ fn change(ground: &mut[[i32; 7]; 7], player: i32)-> (usize, usize){
 println!("Please provide a lane:");
 loop{
 //stdout().flush();
-//Input itself
+//	Input itself
     let mut lane = String::new(); //mutable guess and :: associates new of type string
     io::stdin().read_line(&mut lane)
-        .expect("Failed to read line.");
+	    .expect("Failed to read line.");
     let lane: usize = match lane.trim().parse(){
 	Ok(num) => num,
 	Err(_) => continue, //If error occures go to the beginning of input
     };
-//Validity check
+//	Validity check
     let lane = if lane <= 7 {lane-1} else {println!("You must provide an existing lane!\nPlease provide another lane.");
-    					continue;}; //If lane is out of bounds go to beginning of input
+    					continue; 0}; //If lane is out of bounds go to beginning of input
     let mut row: usize;
     row = 6;
     while ground[row][lane] != 0 && row > 0{
@@ -78,7 +111,7 @@ fn winning(ground : &[[i32;7];7], player: i32)-> bool{
 //			else {return false};//debug-win-check
 for x in 0..7{
 	for y in 0..4{
-//checks horizontal win
+//		checks horizontal win
         if(ground[x][y] != 0 &&
 		ground[x][y]==ground[x][y+1] &&
 		ground[x][y]==ground[x][y+2] && 
@@ -90,7 +123,7 @@ for x in 0..7{
     }
 for x in 0..4{
     for y in 0..7{
-//checks vertical win
+//		checks vertical win
         if(ground[x][y] != 0 &&
 		ground[x][y]==ground[x+1][y] &&
 		ground[x][y]==ground[x+2][y] &&
@@ -102,7 +135,7 @@ for x in 0..4{
     }
 for x in 0..4{
     for y in 0..4{
-//checks right diagonal
+//		checks right diagonal
         if(ground[x][y] != 0 &&
 		ground[x][y]==ground[x+1][y+1] &&
 		ground[x][y]==ground[x+2][y+2] &&
@@ -114,7 +147,7 @@ for x in 0..4{
     }
 for x in 0..4{
     for y in 3..7{
-//checks left diagonal
+//		checks left diagonal
         if(ground[x][y] != 0 &&
 		ground[x][y]==ground[x+1][y-1] &&
 		ground[x][y]==ground[x+2][y-2] &&
@@ -125,4 +158,11 @@ for x in 0..4{
         }
     }
 return false;
+}
+
+//Iterate and print the whole array row by row
+fn p_ground(ground: &[[i32; 7]; 7]){
+    for x in 0..7 {
+        println!("{:?}", ground[x]);
+    }
 }
