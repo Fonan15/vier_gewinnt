@@ -1,6 +1,6 @@
 use std::io;
-//use std::io::stdout;
-//use std::io::Write;
+use std::io::stdout;
+use std::io::Write;
 
 fn main() {
 //	Initialization
@@ -44,7 +44,9 @@ loop{
 		round = round + 1;
 		break;}
 		else{
-		println!("Please type \"yes\" or \"no\" for valid input");}
+		println!("Please type \"yes\" or \"no\" for valid input");
+//		Hier muss noch was hin damit es kein endlos loop wird
+		continue;}
 		}
 	if again == "no" {break;} else {continue;}
 }
@@ -59,22 +61,19 @@ fn game(mut ground: &mut[[i32;7];7], mut player: i32)-> i32{
         p_ground(&ground);
         println!("Player {}, please make your move:", player);
 //		Input
-        let (row, lane) = change(&mut ground, player);
-//		println!("row: {}, lane: {}", row, lane);//Debug print
+        change(&mut ground, player);
 //		Check for win
 		win = winning(&ground, player);
 //		New player set
 		player = if player == 1 {2} else {1};
-//		stdout().flush();
+		stdout().flush();
     }
 	player = if player == 1 {2} else {1};
 	return player;
 }
 
 //Input for the lane which is parsed, checked and returned (only existing lanes accepted)
-fn change(ground: &mut[[i32; 7]; 7], player: i32)-> (usize, usize){
-//ground[1][1] = 2;//debug-set
-//return;
+fn change(ground: &mut[[i32; 7]; 7], player: i32){
 println!("Please provide a lane:");
 loop{
 //stdout().flush();
@@ -96,7 +95,7 @@ loop{
     }
     if ground[row][lane] == 0 {
     ground[row][lane] = player; //If lane is legit set player to board
-    return (row, lane);} else {
+    return;} else {
     println!("Lane is full.\nPlease provide another lane."); //If lane is full return to beginning of input
     continue;};
 }
@@ -104,11 +103,6 @@ loop{
 
 //Check if any of the given conditions leads to a win
 fn winning(ground : &[[i32;7];7], player: i32)-> bool{
-//		if (ground[row][lane] == player){ 
-//			p_ground(&mut ground);
-//			println!("Player {}, you win!", player);
-//			return true;}
-//			else {return false};//debug-win-check
 for x in 0..7{
 	for y in 0..4{
 //		checks horizontal win
