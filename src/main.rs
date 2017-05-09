@@ -1,6 +1,7 @@
 use std::io;
-use std::io::stdout;
-use std::io::Write;
+//use std::thread;
+//use std::io::stdout;
+//use std::io::Write;
 
 fn main() {
 //	Initialization
@@ -52,7 +53,6 @@ loop{
 }
 }
 
-
 //The game itself after initialization
 fn game(mut ground: &mut[[i32;7];7], mut player: i32)-> i32{
 	let mut win = false;
@@ -66,7 +66,6 @@ fn game(mut ground: &mut[[i32;7];7], mut player: i32)-> i32{
 		win = winning(&ground, player);
 //		New player set
 		player = if player == 1 {2} else {1};
-		stdout().flush();
     }
 	player = if player == 1 {2} else {1};
 	return player;
